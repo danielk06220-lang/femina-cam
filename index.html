@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Femina Cam</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #17121c;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    h1 { color: #f3a8d4; }
+    p { color: #e7dce8; }
+    video {
+      width: 100%;
+      max-width: 480px;
+      background: #000;
+      border-radius: 18px;
+      transform: scaleX(-1);
+    }
+    button {
+      margin: 12px 4px;
+      padding: 14px 20px;
+      border: 0;
+      border-radius: 25px;
+      background: #e78bc2;
+      color: #241326;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    #status { font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>Femina Cam</h1>
+  <p>Caméra avant en direct</p>
+
+  <video id="camera" autoplay playsinline muted></video>
+  <br>
+  <button id="start">Activer la caméra</button>
+  <p id="status">Appuie sur le bouton pour commencer.</p>
+
+  <script>
+    const video = document.getElementById("camera");
+    const status = document.getElementById("status");
+    const start = document.getElementById("start");
+
+    start.addEventListener("click", async () => {
+      try {
+        if (!navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia) {
+          throw new Error("Caméra indisponible dans ce navigateur.");
+        }
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "user",
+            width: { ideal: 640 },
+            height: { ideal: 480 }
+          },
+          audio: false
+        });
+
+        video.srcObject = stream;
+        await video.play();
+        status.textContent =
+          "Caméra avant activée. Le suivi facial viendra ensuite.";
+      } catch (error) {
+        status.textContent =
+          "Accès refusé ou caméra indisponible : " + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
